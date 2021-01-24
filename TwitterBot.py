@@ -5,7 +5,7 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 import time
 import pandas as pd
 import numpy as np
-
+import streamlit as st
 
 
 class TwitterBot:
@@ -26,6 +26,7 @@ class TwitterBot:
         self.options.add_argument('--disable-gpu')
         self.options.add_argument('--disable-dev-shm-usage')
         self.options.add_argument('--no-sandbox')
+        self.options.add_argument("--enable-javascript")
         self.driver = webdriver.Chrome(executable_path="Driver/chromedriver", options=self.options)
 
         self.progress = progress
@@ -33,6 +34,7 @@ class TwitterBot:
         self.no_tweets = no_tweets
         self.i = 100/self.no_tweets
         self.twitter = self.driver.get('https://twitter.com/MaryamNSharif')
+
         #self.driver.fullscreen_window()
         self.Tweets = []
         self.flag = True
@@ -42,9 +44,9 @@ class TwitterBot:
         self.search()
         #self.scrap_tweets()
 
-
     def search(self):
         time.sleep(2)
+        #st.text(self.driver.page_source)
         search = self.driver.find_element_by_xpath('//input[@data-testid="SearchBox_Search_Input"]').send_keys([self.trend, Keys.RETURN])
 
     def tweets_collection(self, tweets):
@@ -58,6 +60,11 @@ class TwitterBot:
 
             retweets = tweets.find_element_by_xpath('.//div[@data-testid="retweet"]').get_attribute('aria-label').split(' ')[0]
             likes = tweets.find_element_by_xpath('.//div[@data-testid="like"]').get_attribute('aria-label').split(' ')[0]
+
+            # html_source = self.driver.page_source
+            # file = open('temp.html', 'w')
+            # file.write(html_source)
+            # st.text(html_source)
 
             TWEET = (user_name, user_id, tweet, timestamp, retweets, likes)
 
