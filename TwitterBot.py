@@ -1,4 +1,7 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
@@ -45,9 +48,14 @@ class TwitterBot:
         #self.scrap_tweets()
 
     def search(self):
-        time.sleep(2)
+        #time.sleep(2)
         #st.text(self.driver.page_source)
-        search = self.driver.find_element_by_xpath('//input[@data-testid="SearchBox_Search_Input"]').send_keys([self.trend, Keys.RETURN])
+        print(100)
+        element = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//input[@data-testid="SearchBox_Search_Input"]'))
+            )
+        print(1000)
+        search = element.send_keys([self.trend, Keys.RETURN])
 
     def tweets_collection(self, tweets):
         try:
@@ -85,9 +93,12 @@ class TwitterBot:
 
     def scrap_tweets(self):
         count = 0
-        time.sleep(2)
+        #time.sleep(2)
         while self.flag:
-            cards = self.driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
+            cards = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_all_elements_located((By.XPATH, '//div[@data-testid="tweet"]'))
+            )
+            #cards = self.driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
             if cards:
                 for card in cards:
                     if self.counter != self.no_tweets:
@@ -112,9 +123,10 @@ class TwitterBot:
                         break
 
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-                time.sleep(1)
+                #time.sleep(1)
             else:
                 self.flag = False
+            del cards
 
         return self.df
 
