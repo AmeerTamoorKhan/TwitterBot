@@ -67,6 +67,7 @@ if enter:
     st.markdown(f'''<a href="data:file/csv;base64,{b4}" download="tweets.csv">Download Tweets</a>''', unsafe_allow_html=True)
 elif reset:
     st.empty()
+    default()
 else:
     default()
 
